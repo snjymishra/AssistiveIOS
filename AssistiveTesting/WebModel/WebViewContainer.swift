@@ -15,15 +15,14 @@ public class WebViewContainer: UIView {
     public init(frame: CGRect, urlString: String) {
         super.init(frame: frame)
         guard let url = URL(string: urlString) else {
-            print("Invalid URL string")
-            return
+            fatalError("Invalid URL string: \(urlString)")
         }
         self.url = url
-        self.setupWebView() // Only call this if the URL is valid
+        self.setupWebView()
     }
     
     required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implimented")
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func setupWebView() {
@@ -43,12 +42,13 @@ public class WebViewContainer: UIView {
         ])
         
         // Load the URL
-        if let url = self.url {
-            let request = URLRequest(url: url)
-            webView.load(request)
-        }
+        let request = URLRequest(url: self.url)
+        webView.load(request)
     }
 
+    deinit {
+        webView = nil // Properly deallocate the WKWebView when the container is deallocated
+    }
 }
 
 extension WebViewContainer: WKNavigationDelegate {
@@ -58,6 +58,6 @@ extension WebViewContainer: WKNavigationDelegate {
     }
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        print("WebView loading failed: \(error.localizedDescription)")
+        print("WebView failed to load \(webView.url?.absoluteString ?? "unknown URL"): \(error.localizedDescription)")
     }
 }

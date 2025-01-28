@@ -60,4 +60,3 @@ extension WebViewContainer: WKNavigationDelegate {
         print("WebView loading failed: \(error.localizedDescription)")
     }
 }
-`

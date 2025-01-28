@@ -12,15 +12,14 @@ public class WebViewContainer: UIView {
     private var webView: WKWebView!
     private var url: URL!
     
-    //public initialiser for the sdk
-    public init(frame: CGRect, urlString: String){
+    public init(frame: CGRect, urlString: String) {
         super.init(frame: frame)
-        guard let url = URL(string: urlString) else{
-            print("Invailid url string")
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL string")
             return
         }
         self.url = url
-        self.setupWebView()
+        self.setupWebView() // Only call this if the URL is valid
     }
     
     required public init?(coder: NSCoder) {
@@ -28,24 +27,26 @@ public class WebViewContainer: UIView {
     }
     
     private func setupWebView() {
+        guard webView == nil else { return } // Ensure it's only set up once
         
-        //configure wthe wb view
-        webView = WKWebView.init(frame: self.bounds)
+        // configure the web view
+        webView = WKWebView(frame: self.bounds)
         webView.navigationDelegate = self
         webView.translatesAutoresizingMaskIntoConstraints = false
-        //Add constraints for webview
+        
+        // Add constraints for webview
         NSLayoutConstraint.activate([
             webView.topAnchor.constraint(equalTo: self.topAnchor),
             webView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             webView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             webView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
         ])
-        //Load the URL
+        
+        // Load the URL
         if let url = self.url {
-            let request = URLRequest.init(url: url)
+            let request = URLRequest(url: url)
             webView.load(request)
         }
-        
     }
 
 }
